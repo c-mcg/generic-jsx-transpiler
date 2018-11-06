@@ -18,17 +18,16 @@ A custom serilizer must be an object with a function `serialize` which accepts `
 
 E.g
 ```
-  const serializer = {
-    serialize: (parsedComponent) => {
+  function serialize(parsedComponent){
       const { tag, props, children } = parsedComponent;
       
       const childJS = children.reduce((acc, child) => {
-            acc += `${child.toJS()}`;
+            acc += `${serialize(child)}`;
             return acc;
         }, "");
       
       //Transpile to a React style `createComponent` function
       return `createComponent("${tag}", ${props.toJS()}, ${childJS});` 
-    }
-  }
+    };
+  const serializer = {serialize};
 ```
