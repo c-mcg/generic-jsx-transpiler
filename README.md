@@ -27,7 +27,7 @@ E.g
         }, "");
       
       //Transpile to a React style `createComponent` function
-      return `createComponent("${tag}", ${props.toJS()}, ${childJS});` 
+      return `createComponent(`${tag}`, props.toJS(), childJs);` 
     };
   const serializer = {serialize};
 ```
