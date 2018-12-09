@@ -31,3 +31,6 @@ E.g
     };
   const serializer = {serialize};
 ```
+## Limitations
+
+ - Currently can only parse JSX (no raw text inside JSX)
