@@ -1,4 +1,4 @@
-# generic-jsx-transpiler
+# generic-jsx-transpiler [![Build Status](https://travis-ci.org/c-mcg/generic-jsx-transpiler.svg?branch=master)](https://travis-ci.org/c-mcg/generic-jsx-transpiler)
 
 A library for transpiling JSX for use without React.
 
