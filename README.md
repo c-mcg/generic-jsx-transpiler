@@ -11,7 +11,7 @@ A library for transpiling JSX for use without React.
 ## Usage
 
 ```
-const transpiler = require('./dist/index.js').default;
+const Parser = require('./dist/index.js').Parser;
 
 const testJsx = `function hello() {
   return (
@@ -37,7 +37,7 @@ function serialize(parsedComponent){
 };
 const serializer = {serialize};
 
-const parser = new transpiler.Parser({ source: testJsx, serializer });
+const parser = new Parser({ source: testJsx, serializer });
 
 console.log(parser.start());
 ```
