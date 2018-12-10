@@ -1,3 +1,4 @@
+import { EvaluatedProp } from "./ParsedProp";
 
 export class ComponentProps {
 
@@ -6,17 +7,20 @@ export class ComponentProps {
     }
 
     toJS() {
-        return `(() => {return{${Object.keys(this.props).reduce((acc, propName) => {
-            acc += `${propName}: ${this.props[propName].toJS()},`;
+        if (!this.props) return JSON.stringify(this.props);
+        return JSON.stringify(Object.keys(this.props).reduce((acc, propName) => {
+            const prop = this.props[propName];
+            const jsValue = prop.toJS();
+            acc[propName] = prop instanceof EvaluatedProp ? jsValue : JSON.parse(jsValue);
             return acc;
-        }, "")}}})()`;
+        }, {}));
     }
 
 }
 
 export default class ParsedComponent {
     
-    constructor({tag, props={}, parent=null, children=[]}) {
+    constructor({tag, props=null, parent=null, children=[]}) {
         this.tag = tag;
         this.props = new ComponentProps(props);
         this.parent = parent;
@@ -26,15 +30,13 @@ export default class ParsedComponent {
     }
 
     toJS() {
-        const childrenJS = this.children.reduce((acc, child) => {
-            acc += `${child.toJS()}`;
-            return acc;
-        }, "");
-        return `(() => {return {
-            tag: "${this.tag}",
-            props: ${this.props.toJS()},
-            children: [${childrenJS}],
-        }})()`;
+        const children = this.children.map(child => JSON.parse(child.toJS()));
+        const output = {
+            tag: this.tag,
+            props: JSON.parse(this.props.toJS()),
+            children,
+        }
+        return JSON.stringify(output);
     }
     
 }

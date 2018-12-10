@@ -46,7 +46,7 @@ export default class Parser {
     createComponent() {
         const newComponent = new ParsedComponent({
             tag: this.currTag,
-            props: this.currProps,
+            props: Object.keys(this.currProps).length === 0 ? null : this.currProps,
             parent: this.currComponent,
         });
 

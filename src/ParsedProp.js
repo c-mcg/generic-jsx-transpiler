@@ -7,11 +7,7 @@ export class Prop {
     }
 
     toJS() {
-        if (typeof this._value === 'string') {
-            return `"${this._value}"`;
-        }
-
-        return this._value;
+        return JSON.stringify(this._value);
     }
 
 }
@@ -23,7 +19,7 @@ export class EvaluatedProp {
     }
 
     toJS() {
-        return `(() => {return (${this._source})})()`
+        return this._source;
     }
 
 }

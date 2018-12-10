@@ -105,7 +105,7 @@ describe('Parser', () => {
 
         expect(parser.currComponent).toEqual(new ParsedComponent({
             tag: "div",
-            props: {},
+            props: null,
             parent: null,
             children: [],
         }))

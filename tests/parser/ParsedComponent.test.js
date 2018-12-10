@@ -9,15 +9,16 @@ describe('ComponentProps', () => {
     });
 
     it('can be converted to JS', () => {
+        const expectedResult = {
+            test: "Hey!",
+            test2: 4
+        };
         const props = new ComponentProps({
             test: new Prop("Hey!"),
             test2: new Prop(4)
         });
 
-        expect(eval(props.toJS())).toEqual({
-            test: "Hey!",
-            test2: 4
-        })
+        expect(props.toJS()).toEqual(JSON.stringify(expectedResult));
     });
 
 });
@@ -46,6 +47,11 @@ describe('ParsedComponent', () => {
     });
 
     it('can be converted to JS', () => {
+        const expectedResult = {
+            tag: "div",
+            props: {test: 'yo'},
+            children: [],
+        };
         const comp = new ParsedComponent({
             tag: "div",
             props: {
@@ -53,11 +59,7 @@ describe('ParsedComponent', () => {
             },
         })
 
-        expect(eval(`() => ${comp.toJS()}`)()).toEqual({
-            tag: "div",
-            props: (() => {return {test: 'yo'}})(),
-            children: [],
-        });
+        expect(comp.toJS()).toEqual(JSON.stringify(expectedResult));
     })
 
 });

@@ -1,6 +1,6 @@
 {
   "name": "generic-jsx-transpiler",
-  "version": "0.5.0",
+  "version": "0.8.0",
   "description": "A library for creating custom JSX transpilers",
   "main": "index.js",
   "directories": {
@@ -8,7 +8,12 @@
     "test": "tests"
   },
   "scripts": {
-    "test": "jest --verbose"
+    "test": "jest",
+    "build": "babel src -d dist"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/c-mcg/JS-Laravel-validation.git"
   },
   "keywords": [
     "generic",
@@ -24,10 +29,14 @@
   "author": "Connor McGrogan",
   "license": "ISC",
   "devDependencies": {
-    "@babel/core": "^7.2.0",
-    "@babel/preset-env": "^7.2.0",
+    "@babel/cli": "^7.2.0",
+    "@babel/core": "^7.1.5",
+    "@babel/preset-env": "^7.1.5",
     "babel-core": "^7.0.0-bridge.0",
     "babel-jest": "^23.6.0",
-    "jest": "^23.6.0"
+    "babel-loader": "^8.0.4",
+    "jest": "^23.6.0",
+    "webpack": "^4.25.1",
+    "webpack-cli": "^3.1.2"
   }
 }
