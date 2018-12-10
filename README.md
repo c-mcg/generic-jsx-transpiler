@@ -11,7 +11,7 @@ A library for transpiling JSX for use without React.
 ## Usage
 
 ```
-const transpiler = require('generic-jsx-transpiler').default;
+const transpiler = require('./dist/index.js').default;
 
 const testJsx = `function hello() {
     return (
@@ -22,6 +22,7 @@ const testJsx = `function hello() {
     );
   }`
 
+  //Transpile to a React style `createElement` function
   function serialize(parsedComponent){
     const { tag, props, children } = parsedComponent;
     
@@ -30,9 +31,9 @@ const testJsx = `function hello() {
           if (index != children.length - 1) acc += ', ';
           return acc;
       }, "");
-    
-    //Transpile to a React style `createElement` function
-    return `createElement("${tag}", ${props.toJS()}${childJS ? `, ${childJS}` : ''})`;
+    const childParam = childJS ? `, ${childJS}` : '';
+
+    return `createElement("${tag}", ${props.toJS()}${childParam})`;
   };
 const serializer = {serialize};
 
