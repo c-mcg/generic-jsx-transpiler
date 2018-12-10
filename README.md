@@ -31,8 +31,8 @@ const testJsx = `function hello() {
           if (index != children.length - 1) acc += ', ';
           return acc;
       }, "");
+      
     const childParam = childJS ? `, ${childJS}` : '';
-
     return `createElement("${tag}", ${props.toJS()}${childParam})`;
   };
 const serializer = {serialize};
