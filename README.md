@@ -2,8 +2,6 @@
 
 A library for transpiling JSX for use without React.
 
-`generic-jsx-transpiler` will parse JSX and transform the markup using the given serializer.
-
 # Setup
 
 `npm install generic-jsx-transpiler --save-dev`
