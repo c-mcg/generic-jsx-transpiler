@@ -10,7 +10,6 @@ A library for transpiling JSX for use without React.
 
 ## Usage
 
-E.g
 ```
 const transpiler = require('generic-jsx-transpiler').default;
 
