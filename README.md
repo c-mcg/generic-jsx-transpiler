@@ -4,33 +4,46 @@ A library for transpiling JSX for use without React.
 
 `generic-jsx-transpiler` will parse JSX and transform the markup using the given serializer.
 
+# Setup
+
+`npm install generic-jsx-transpiler --save-dev`
+
+`npm install` if running tests or building dist
+
 ## Usage
-
-Uses AbstractSerializer by default
-
-```
-  console.log(new Parser(source).start());
-```
-
-## Custom Serializers
-
-A custom serilizer must be an object with a function `serialize` which accepts `ParsedComponent` and returns a string containing valid JavaScript
 
 E.g
 ```
+const transpiler = require('generic-jsx-transpiler').default;
+
+const testJsx = `function hello() {
+    return (
+      <div>
+        <span></span>
+        <span></span>
+      </div>
+    );
+  }`
+
   function serialize(parsedComponent){
-      const { tag, props, children } = parsedComponent;
-      
-      const childJS = children.reduce((acc, child) => {
-            acc += `${serialize(child)}`;
-            return acc;
-        }, "");
-      
-      //Transpile to a React style `createComponent` function
-      return `createComponent(${tag}, props.toJS(), childJs);` 
-    };
-  const serializer = {serialize};
+    const { tag, props, children } = parsedComponent;
+    
+    const childJS = children.reduce((acc, child, index) => {
+          acc += `${serialize(child)}`;
+          if (index != children.length - 1) acc += ', ';
+          return acc;
+      }, "");
+    
+    //Transpile to a React style `createComponent` function
+    return `createComponent("${tag}", ${props.toJS()}${childJS ? `, ${childJS}` : ''})`;
+  };
+const serializer = {serialize};
+
+const parser = new transpiler.Parser({ source: testJsx, serializer });
+
+console.log(parser.start());
 ```
+
 ## Limitations
 
  - Currently can't parse raw text inside JSX
