@@ -33,4 +33,4 @@ E.g
 ```
 ## Limitations
 
- - Currently can only parse JSX (no raw text inside JSX)
+ - Currently can't parse raw text inside JSX
