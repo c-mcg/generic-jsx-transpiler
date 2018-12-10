@@ -32,8 +32,8 @@ const testJsx = `function hello() {
           return acc;
       }, "");
     
-    //Transpile to a React style `createComponent` function
-    return `createComponent("${tag}", ${props.toJS()}${childJS ? `, ${childJS}` : ''})`;
+    //Transpile to a React style `createElement` function
+    return `createElement("${tag}", ${props.toJS()}${childJS ? `, ${childJS}` : ''})`;
   };
 const serializer = {serialize};
 
