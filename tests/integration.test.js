@@ -43,7 +43,7 @@ describe('Integration', () => {
         expect(serializedComponent).toEqual(expectedResult)
     });
 
-    xit('can serialize a nested string', () => {
+    it('can serialize a nested string', () => {
         const expectedConvertedJsx = {
             tag: "div",
             props: null,
