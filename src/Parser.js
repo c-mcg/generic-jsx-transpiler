@@ -371,6 +371,7 @@ STATE = {
         init(parser) {
             parser.currTag = "";
             parser.currProps = {};
+            parser.currString = "";
             parser.currTagEndsWithSlash = false;
             parser.currTagLeadsWithSlash = false;
         },
@@ -384,7 +385,33 @@ STATE = {
                 return;
             }
 
-            parser.throwError(`Unexpected ${c}`);
+            parser.currString = `${c}`;
+            parser.setState(STATE.BUILDING_STRING);
+            // parser.throwError(`Unexpected ${c}`);
+        }
+    }),
+
+    BUILDING_STRING: new State({
+        name: "BUILDING_STRING",
+        parent: "LOOKING_FOR_MARKUP",
+        init(parser) {
+            parser.lastCharWasWhitespace = false;
+        },
+        handleState(c, parser) {
+            if (c === '<') {
+                parser.currComponent.children.push(parser.currString);
+                parser.setState(STATE.LOOKING_FOR_TAG);
+                return;
+            }
+
+            if (isWhitespace(c)) {
+                if (parser.lastCharWasWhitespace) {
+                    return;
+                }
+                parser.lastCharWasWhitespace = true;
+            }
+
+            parser.currString += c;
         }
     }),
 

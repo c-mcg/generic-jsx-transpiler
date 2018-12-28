@@ -156,7 +156,7 @@ describe('Parser', () => {
         }))
     });
 
-    it.only('can find a nested string', () => {
+    it('can find a nested string', () => {
         const parser = new Parser({source: `<div>hello</div>`})
 
         parser.start();
