@@ -10,30 +10,15 @@ A library for transpiling JSX for use without React.
 
 ## Usage
 
+Here is a bare bones example of API usage. Proper usage examples can be found in the `examples` directory
+
 ```
 const Parser = require('generic-jsx-transpiler').Parser;
 
-const testJsx = `function hello() {
-  return (
-    <div>
-      <span></span>
-      <span></span>
-    </div>
-  );
-}`
+const testJsx = `const ele = <div/>`
 
-//Transpile to a React style `createElement` function
 function serialize(parsedComponent){
-  const { tag, props, children } = parsedComponent;
-  
-  const childJS = children.reduce((acc, child, index) => {
-        acc += `${serialize(child)}`;
-        if (index != children.length - 1) acc += ', ';
-        return acc;
-    }, "");
-    
-  const childParam = childJS ? `, ${childJS}` : '';
-  return `createElement("${tag}", ${props.toJS()}${childParam})`;
+  return `<div/>`;
 };
 const serializer = {serialize};
 
@@ -41,7 +26,3 @@ const parser = new Parser({ source: testJsx, serializer });
 
 console.log(parser.start());
 ```
-
-## Limitations
-
- - Currently can't parse raw text inside JSX
