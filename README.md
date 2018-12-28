@@ -11,7 +11,7 @@ A library for transpiling JSX for use without React.
 ## Usage
 
 ```
-const Parser = require('./dist/index.js').Parser;
+const Parser = require('generic-jsx-transpiler').Parser;
 
 const testJsx = `function hello() {
   return (
