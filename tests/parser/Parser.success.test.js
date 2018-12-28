@@ -156,6 +156,17 @@ describe('Parser', () => {
         }))
     });
 
+    it.only('can find a nested string', () => {
+        const parser = new Parser({source: `<div>hello</div>`})
+
+        parser.start();
+
+        expect(parser.currComponent).toEqual(new ParsedComponent({
+            tag: "div",
+            children: ["hello"]
+        }))
+    })
+
     it('can find sibling components', () => {
         const parser = new Parser({source: `<div><div/><div/></div>`})
 
