@@ -3,9 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.EvaluatedProp = exports.Prop = void 0;
-
-var _os = require("os");
+exports.default = void 0;
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -13,44 +11,28 @@ function _defineProperties(target, props) { for (var i = 0; i < props.length; i+
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
 
-var Prop =
+var DefaultSerializer =
 /*#__PURE__*/
 function () {
-  function Prop(value) {
-    _classCallCheck(this, Prop);
-
-    this._value = value;
+  function DefaultSerializer() {
+    _classCallCheck(this, DefaultSerializer);
   }
+  /**
+   * Should recursively serialize a parsed component
+   * 
+   * @param ParsedComponent parsedComponent 
+   * @returns a string containing a valid JS statement resulting in a single value
+   */
 
-  _createClass(Prop, [{
-    key: "toJS",
-    value: function toJS() {
-      return JSON.stringify(this._value);
+
+  _createClass(DefaultSerializer, [{
+    key: "serialize",
+    value: function serialize(parsedComponent) {
+      return parsedComponent.toJS();
     }
   }]);
 
-  return Prop;
+  return DefaultSerializer;
 }();
 
-exports.Prop = Prop;
-
-var EvaluatedProp =
-/*#__PURE__*/
-function () {
-  function EvaluatedProp(source) {
-    _classCallCheck(this, EvaluatedProp);
-
-    this._source = source;
-  }
-
-  _createClass(EvaluatedProp, [{
-    key: "toJS",
-    value: function toJS() {
-      return this._source;
-    }
-  }]);
-
-  return EvaluatedProp;
-}();
-
-exports.EvaluatedProp = EvaluatedProp;
+exports.default = DefaultSerializer;

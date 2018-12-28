@@ -9,7 +9,7 @@ var _Util = require("./util/Util");
 
 var _Constants = require("./util/Constants");
 
-var _AbstractSerializer = _interopRequireDefault(require("./AbstractSerializer"));
+var _DefaultSerializer = _interopRequireDefault(require("./DefaultSerializer"));
 
 var _ParsedProp = require("./ParsedProp");
 
@@ -37,7 +37,7 @@ function () {
   function Parser(_ref) {
     var source = _ref.source,
         _ref$serializer = _ref.serializer,
-        serializer = _ref$serializer === void 0 ? new _AbstractSerializer.default() : _ref$serializer;
+        serializer = _ref$serializer === void 0 ? new _DefaultSerializer.default() : _ref$serializer;
 
     _classCallCheck(this, Parser);
 
@@ -77,36 +77,57 @@ function () {
       this.setState(STATE.NONE);
     }
   }, {
+    key: "onFoundTag",
+    value: function onFoundTag() {
+      //TODO split into smaller functions
+      if (this.currTagLeadsWithSlash) {
+        // closing tag
+        this.closeCurrentComponent();
+      } else if (this.currTagEndsWithSlash) {
+        // self closing tag
+        this.addSelfClosingComponent();
+      } else {
+        // An openening tag
+        this.addOpenComponent();
+      }
+    }
+  }, {
     key: "createComponent",
     value: function createComponent() {
-      var newComponent = new _ParsedComponent.default({
+      return new _ParsedComponent.default({
         tag: this.currTag,
         props: Object.keys(this.currProps).length === 0 ? null : this.currProps,
         parent: this.currComponent
       });
-
-      if (this.currTagLeadsWithSlash) {
-        // closing tag
-        if (this.currComponent.parent) {
-          this.currComponent.parent.children.push(this.currComponent);
-          this.currComponent = this.currComponent.parent;
-          this.setState(STATE.LOOKING_FOR_MARKUP);
-        } else {
-          this.onFoundComponentTree();
-        }
-      } else if (this.currTagEndsWithSlash) {
-        // self closing tag
-        if (this.currComponent) {
-          this.currComponent.children.push(newComponent);
-          this.setState(STATE.LOOKING_FOR_MARKUP);
-        } else {
-          this.currComponent = newComponent;
-          this.onFoundComponentTree();
-        }
-      } else {
-        // An openening tag
-        this.currComponent = newComponent;
+    }
+  }, {
+    key: "addOpenComponent",
+    value: function addOpenComponent() {
+      this.currComponent = this.createComponent();
+      this.setState(STATE.LOOKING_FOR_MARKUP);
+    }
+  }, {
+    key: "closeCurrentComponent",
+    value: function closeCurrentComponent() {
+      if (this.currComponent.parent) {
+        this.currComponent.parent.children.push(this.currComponent);
+        this.currComponent = this.currComponent.parent;
         this.setState(STATE.LOOKING_FOR_MARKUP);
+      } else {
+        this.onFoundComponentTree();
+      }
+    }
+  }, {
+    key: "addSelfClosingComponent",
+    value: function addSelfClosingComponent() {
+      var component = this.createComponent();
+
+      if (this.currComponent) {
+        this.currComponent.children.push(component);
+        this.setState(STATE.LOOKING_FOR_MARKUP);
+      } else {
+        this.currComponent = component;
+        this.onFoundComponentTree();
       }
     }
   }, {
@@ -192,7 +213,8 @@ var State = function State(_ref2) {
   } else {
     this.initAll = this.init;
   }
-};
+}; // Used to return to an arbitrary state after quotes via quoteReturnStateQueue
+
 
 var QueuedState = function QueuedState(state, callback) {
   _classCallCheck(this, QueuedState);
@@ -336,7 +358,7 @@ STATE = {
       }
 
       if (c === '>') {
-        parser.createComponent();
+        parser.onFoundTag();
         return;
       } else if (parser.currTagEndsWithSlash) {
         parser.throwError("Unexpected ".concat(c));
@@ -378,7 +400,7 @@ STATE = {
       }
 
       if (c === '>') {
-        parser.createComponent();
+        parser.onFoundTag();
         return;
       } else if (parser.currTagEndsWithSlash) {
         parser.throwError("Unexpected ".concat(c));
@@ -404,6 +426,7 @@ STATE = {
     init: function init(parser) {
       parser.currTag = "";
       parser.currProps = {};
+      parser.currString = "";
       parser.currTagEndsWithSlash = false;
       parser.currTagLeadsWithSlash = false;
     },
@@ -417,7 +440,35 @@ STATE = {
         return;
       }
 
-      parser.throwError("Unexpected ".concat(c));
+      parser.currString = "".concat(c);
+      parser.setState(STATE.BUILDING_STRING); // parser.throwError(`Unexpected ${c}`);
+    }
+  }),
+  BUILDING_STRING: new State({
+    name: "BUILDING_STRING",
+    parent: "LOOKING_FOR_MARKUP",
+    init: function init(parser) {
+      parser.lastCharWasWhitespace = false;
+    },
+    handleState: function handleState(c, parser) {
+      if (c === '<') {
+        parser.currComponent.children.push(parser.currString);
+        parser.setState(STATE.LOOKING_FOR_TAG);
+        return;
+      }
+
+      if ((0, _Util.isWhitespace)(c)) {
+        if (!parser.lastCharWasWhitespace) {
+          parser.currString += " ";
+        }
+
+        parser.lastCharWasWhitespace = true;
+        return;
+      } else {
+        parser.lastCharWasWhitespace = false;
+      }
+
+      parser.currString += c;
     }
   }),
   BUILDING_PROP_NAME: new State({

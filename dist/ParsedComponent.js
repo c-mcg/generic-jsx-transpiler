@@ -5,6 +5,8 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = exports.ComponentProps = void 0;
 
+var _ParsedProp = require("./ParsedProp");
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
@@ -23,7 +25,15 @@ function () {
   _createClass(ComponentProps, [{
     key: "toJS",
     value: function toJS() {
-      return JSON.stringify(this.props);
+      var _this = this;
+
+      if (!this.props) return JSON.stringify(this.props);
+      return JSON.stringify(Object.keys(this.props).reduce(function (acc, propName) {
+        var prop = _this.props[propName];
+        var jsValue = prop.toJS();
+        acc[propName] = prop instanceof _ParsedProp.EvaluatedProp ? jsValue : JSON.parse(jsValue);
+        return acc;
+      }, {}));
     }
   }]);
 
@@ -36,7 +46,7 @@ var ParsedComponent =
 /*#__PURE__*/
 function () {
   function ParsedComponent(_ref) {
-    var _this = this;
+    var _this2 = this;
 
     var tag = _ref.tag,
         _ref$props = _ref.props,
@@ -52,19 +62,30 @@ function () {
     this.props = new ComponentProps(props);
     this.parent = parent;
     this.children = children;
-    children.forEach(function (child) {
-      return child.parent = _this;
+    children.filter(function (child) {
+      return child instanceof ParsedComponent;
+    }).forEach(function (child) {
+      return child.parent = _this2;
     });
   }
 
   _createClass(ParsedComponent, [{
     key: "toJS",
     value: function toJS() {
-      var childrenJS = this.children.reduce(function (acc, child) {
-        acc += "".concat(child.toJS());
-        return acc;
-      }, "");
-      return "(() => {return {\n            tag: \"".concat(this.tag, "\",\n            props: ").concat(this.props.toJS(), ",\n            children: [").concat(childrenJS, "],\n        }})()");
+      var children = this.children.map(function (child) {
+        if (typeof child === 'string') {
+          return child;
+        }
+
+        return JSON.parse(child.toJS());
+        ;
+      });
+      var output = {
+        tag: this.tag,
+        props: JSON.parse(this.props.toJS()),
+        children: children
+      };
+      return JSON.stringify(output);
     }
   }]);
 
