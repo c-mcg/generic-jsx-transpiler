@@ -1,14 +1,14 @@
 import { isNumber, isAlpha, isWhitespace, throwError } from './util/Util'
 import { QUOTE_TYPE, QUOTE_CHAR, QUOTE_TYPE_FROM_CHAR } from './util/Constants'
 
-import AbstractSerializer from './AbstractSerializer'
+import DefaultSerializer from './DefaultSerializer'
 
 import { Prop, EvaluatedProp } from './ParsedProp'
 import ParsedComponent from './ParsedComponent'
 
 export default class Parser {
 
-    constructor({ source, serializer=new AbstractSerializer() }) {
+    constructor({ source, serializer=new DefaultSerializer() }) {
         this.source = source;
         this.serializer = serializer;
         this.newSource = "";

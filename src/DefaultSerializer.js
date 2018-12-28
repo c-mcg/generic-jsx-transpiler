@@ -1,5 +1,5 @@
 
-export default class AbstractSerializer {
+export default class DefaultSerializer {
 
     constructor() {}
 

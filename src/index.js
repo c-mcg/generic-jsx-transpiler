@@ -1,9 +1,9 @@
 import Parser from './Parser';
-import AbstractSerializer from './AbstractSerializer';
+import DefaultSerializer from './DefaultSerializer';
 
 const jsxTranspiler = {
     Parser,
-    AbstractSerializer,
+    DefaultSerializer,
 }
 
 exports.default = jsxTranspiler;
