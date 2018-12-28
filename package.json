@@ -1,6 +1,6 @@
 {
   "name": "generic-jsx-transpiler",
-  "version": "0.9.2",
+  "version": "0.9.3",
   "description": "A library for creating custom JSX transpilers",
   "main": "index.js",
   "directories": {
