@@ -43,7 +43,7 @@ export default class Parser {
         this.setState(STATE.NONE);
     }
 
-    createComponent() {
+    createComponent() {//TODO split into smaller functions
         const newComponent = new ParsedComponent({
             tag: this.currTag,
             props: Object.keys(this.currProps).length === 0 ? null : this.currProps,
@@ -141,6 +141,7 @@ class State {
 
 }
 
+// Used to return to an arbitrary state after quotes via quoteReturnStateQueue
 class QueuedState {
 
     constructor(state, callback) {
