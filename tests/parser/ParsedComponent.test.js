@@ -50,13 +50,14 @@ describe('ParsedComponent', () => {
         const expectedResult = {
             tag: "div",
             props: {test: 'yo'},
-            children: [],
+            children: ["hi"],
         };
         const comp = new ParsedComponent({
             tag: "div",
             props: {
                 test: new Prop("yo")
             },
+            children: ["hi"],
         })
 
         expect(comp.toJS()).toEqual(JSON.stringify(expectedResult));

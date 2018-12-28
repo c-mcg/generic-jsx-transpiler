@@ -26,11 +26,18 @@ export default class ParsedComponent {
         this.parent = parent;
         this.children = children;
 
-        children.forEach(child => child.parent = this);
+        children
+            .filter(child => child instanceof ParsedComponent)
+            .forEach(child => child.parent = this);
     }
 
     toJS() {
-        const children = this.children.map(child => JSON.parse(child.toJS()));
+        const children = this.children.map(child => {
+            if (typeof child === 'string') {
+                return child;
+            }
+            return JSON.parse(child.toJS());;
+        });
         const output = {
             tag: this.tag,
             props: JSON.parse(this.props.toJS()),
