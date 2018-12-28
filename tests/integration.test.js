@@ -1,6 +1,6 @@
 import Parser from '../src/Parser';
 
-describe('AbstractSerializer', () => {
+describe('Integration', () => {
 
     function parse(source) {
         return new Parser({source}).start();
@@ -42,5 +42,29 @@ describe('AbstractSerializer', () => {
         const serializedComponent = parse(source);
         expect(serializedComponent).toEqual(expectedResult)
     });
+
+    xit('can serialize a nested string', () => {
+        const expectedConvertedJsx = {
+            tag: "div",
+            props: null,
+            children: [
+                {
+                    tag: "span",
+                    props: null,
+                    children: ["span child"],
+                },
+                "div child"
+            ],
+        };
+        const source = `() => {
+            return <div><span>span child</span>div child</div>
+        }`
+        const expectedResult = source.replace('<div><span>span child</span>div child</div>', JSON.stringify(expectedConvertedJsx))
+
+
+        const serializedComponent = parse(source);
+        expect(serializedComponent).toEqual(expectedResult)
+    
+    })
 
 })
