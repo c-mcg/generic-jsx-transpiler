@@ -180,9 +180,11 @@ describe('Parser', () => {
         expect(parser.state).toBe(STATE.NONE);
     })
 
-    /*********************************************/
-    /* TESTING QUOTE AND TEMPLATE LITERALS BELOW */
-    /*********************************************/
+    /***************************************************/
+    /***************************************************/
+    /**** TESTING QUOTE AND TEMPLATE LITERALS BELOW ****/
+    /***************************************************/
+    /***************************************************/
 
     it('can parse quotes preceded with an escaped backslack', () => {
         const parser = new Parser({source: `const h = "\\\\"`})
