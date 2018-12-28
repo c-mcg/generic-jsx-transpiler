@@ -43,32 +43,47 @@ export default class Parser {
         this.setState(STATE.NONE);
     }
 
-    createComponent() {//TODO split into smaller functions
-        const newComponent = new ParsedComponent({
+    onFoundTag() {//TODO split into smaller functions
+        if (this.currTagLeadsWithSlash) { // closing tag
+            this.closeCurrentComponent()
+        } else if (this.currTagEndsWithSlash) { // self closing tag
+            this.addSelfClosingComponent()
+        } else {// An openening tag
+            this.addOpenComponent();
+        }
+    }
+
+    createComponent() {
+        return new ParsedComponent({
             tag: this.currTag,
             props: Object.keys(this.currProps).length === 0 ? null : this.currProps,
             parent: this.currComponent,
         });
+    }
 
-        if (this.currTagLeadsWithSlash) { // closing tag
-            if (this.currComponent.parent) {
-                this.currComponent.parent.children.push(this.currComponent);
-                this.currComponent = this.currComponent.parent;
-                this.setState(STATE.LOOKING_FOR_MARKUP);
-            } else {
-                this.onFoundComponentTree();
-            }
-        } else if (this.currTagEndsWithSlash) { // self closing tag
-            if (this.currComponent) {
-                this.currComponent.children.push(newComponent);
-                this.setState(STATE.LOOKING_FOR_MARKUP);
-            } else {
-                this.currComponent = newComponent;
-                this.onFoundComponentTree();
-            }
-        } else {// An openening tag
-            this.currComponent = newComponent
+    addOpenComponent() {
+        this.currComponent = this.createComponent();
+        this.setState(STATE.LOOKING_FOR_MARKUP);
+    }
+
+    closeCurrentComponent() {
+        if (this.currComponent.parent) {
+            this.currComponent.parent.children.push(this.currComponent);
+            this.currComponent = this.currComponent.parent;
             this.setState(STATE.LOOKING_FOR_MARKUP);
+        } else {
+            this.onFoundComponentTree();
+        }
+    }
+
+    addSelfClosingComponent() {
+        const component = this.createComponent();
+        if (this.currComponent) {
+            this.currComponent.children.push(component);
+            this.setState(STATE.LOOKING_FOR_MARKUP);
+        } else {
+            this.currComponent = component;
+            this.onFoundComponentTree();
         }
     }
 
@@ -287,7 +302,7 @@ STATE = {
             }
 
             if (c === '>') {
-                parser.createComponent();
+                parser.onFoundTag();
                 return;
             } else if (parser.currTagEndsWithSlash) {
                 parser.throwError(`Unexpected ${c}`)
@@ -328,7 +343,7 @@ STATE = {
             }
 
             if (c === '>') {
-                parser.createComponent();
+                parser.onFoundTag();
                 return;
             } else if (parser.currTagEndsWithSlash) {
                 parser.throwError(`Unexpected ${c}`)
