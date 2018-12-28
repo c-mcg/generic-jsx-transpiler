@@ -17,11 +17,12 @@ const Parser = require('generic-jsx-transpiler').Parser;
 
 const testJsx = `const ele = <div/>`
 
+// This will simple output '<div/>' in place fo any JSX blocks
 function serialize(parsedComponent){
   return `<div/>`;
 };
-const serializer = {serialize};
 
+const serializer = {serialize};
 const parser = new Parser({ source: testJsx, serializer });
 
 console.log(parser.start());
