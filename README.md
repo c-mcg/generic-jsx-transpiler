@@ -12,6 +12,7 @@ A library for transpiling JSX for use without React.
 
 Here is a bare bones example of API usage.
 Proper usage examples can be found in the `examples` directory.
+
 `node examples/hyperscript` to run [Hyperscript](https://www.npmjs.com/package/hyperscript) example
 
 ```
