@@ -405,10 +405,13 @@ STATE = {
             }
 
             if (isWhitespace(c)) {
-                if (parser.lastCharWasWhitespace) {
-                    return;
+                if (!parser.lastCharWasWhitespace) {
+                    parser.currString += " ";
                 }
                 parser.lastCharWasWhitespace = true;
+                return;
+            } else {
+                parser.lastCharWasWhitespace = false;
             }
 
             parser.currString += c;

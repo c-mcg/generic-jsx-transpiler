@@ -167,6 +167,17 @@ describe('Parser', () => {
         }))
     })
 
+    it('will reduce whitespace in strings', () => {
+        const parser = new Parser({source: `<div>h  e\t\tl\n\nl o</div>`})
+
+        parser.start();
+
+        expect(parser.currComponent).toEqual(new ParsedComponent({
+            tag: "div",
+            children: ["h e l l o"]
+        }))
+    })
+
     it('can find sibling components', () => {
         const parser = new Parser({source: `<div><div/><div/></div>`})
 
