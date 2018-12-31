@@ -30,6 +30,11 @@ function () {
     value: function serialize(parsedComponent) {
       return parsedComponent.toJS();
     }
+  }, {
+    key: "createImports",
+    value: function createImports() {
+      return "";
+    }
   }]);
 
   return DefaultSerializer;

@@ -5,6 +5,8 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = void 0;
 
+var _fs = _interopRequireDefault(require("fs"));
+
 var _Util = require("./util/Util");
 
 var _Constants = require("./util/Constants");
@@ -34,15 +36,16 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
 var Parser =
 /*#__PURE__*/
 function () {
-  function Parser(_ref) {
-    var source = _ref.source,
+  function Parser() {
+    var _ref = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},
         _ref$serializer = _ref.serializer,
         serializer = _ref$serializer === void 0 ? new _DefaultSerializer.default() : _ref$serializer;
 
     _classCallCheck(this, Parser);
 
-    this.source = source;
+    // this.source = source;//
     this.serializer = serializer;
+    this.source = null;
     this.newSource = "";
     this.started = false;
     this.promise = null;
@@ -131,11 +134,47 @@ function () {
       }
     }
   }, {
-    key: "start",
-    value: function start() {
+    key: "loadFile",
+    value: function loadFile(path) {
+      return _fs.default.readFileSync(path, {
+        encoding: 'utf8'
+      });
+    }
+  }, {
+    key: "saveToFile",
+    value: function saveToFile(path) {
+      return _fs.default.writeFileSync(path, this.newSource);
+    } //TODO support file path
+
+  }, {
+    key: "parse",
+    value: function parse(_ref2) {
       var _this = this;
 
-      var async = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
+      var inputPath = _ref2.inputPath,
+          source = _ref2.source,
+          outputPath = _ref2.outputPath,
+          _ref2$async = _ref2.async,
+          async = _ref2$async === void 0 ? false : _ref2$async;
+
+      this.source = function () {
+        if (source) {
+          return source;
+        }
+
+        if (!inputPath) {
+          throw new Error("You must specify source to parse via 'inputPath' or 'source' params");
+        }
+
+        return _this.loadFile(inputPath);
+      }();
+
+      var createImports = this.serializer.createImports;
+      this.newSource = createImports ? createImports() : "";
+
+      if (this.newSource) {
+        this.newSource += "\n";
+      }
 
       if (this.started) {
         throw new Error("\"start\" method can only be called once on Parser.");
@@ -155,14 +194,17 @@ function () {
           return;
         }
 
+        if (outputPath) {
+          _this.saveToFile(outputPath);
+        }
+
         return _this.newSource;
       };
 
       if (async) {
         this.promise = new Promise(start);
       } else {
-        start();
-        return this.newSource;
+        return start();
       }
 
       return this.promise;
@@ -186,17 +228,17 @@ function () {
 
 exports.default = Parser;
 
-var State = function State(_ref2) {
+var State = function State(_ref3) {
   var _this2 = this;
 
-  var _ref2$name = _ref2.name,
-      name = _ref2$name === void 0 ? "" : _ref2$name,
-      _ref2$init = _ref2.init,
-      init = _ref2$init === void 0 ? function () {} : _ref2$init,
-      _ref2$handleState = _ref2.handleState,
-      handleState = _ref2$handleState === void 0 ? function () {} : _ref2$handleState,
-      _ref2$parent = _ref2.parent,
-      parent = _ref2$parent === void 0 ? null : _ref2$parent;
+  var _ref3$name = _ref3.name,
+      name = _ref3$name === void 0 ? "" : _ref3$name,
+      _ref3$init = _ref3.init,
+      init = _ref3$init === void 0 ? function () {} : _ref3$init,
+      _ref3$handleState = _ref3.handleState,
+      handleState = _ref3$handleState === void 0 ? function () {} : _ref3$handleState,
+      _ref3$parent = _ref3.parent,
+      parent = _ref3$parent === void 0 ? null : _ref3$parent;
 
   _classCallCheck(this, State);
 
