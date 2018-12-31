@@ -4,6 +4,7 @@ import Parser, { STATE } from '../../src/Parser'
 import ParsedComponent from '../../src/ParsedComponent'
 import { Prop, EvaluatedProp } from '../../src/ParsedProp'
 import { QUOTE_TYPE } from '../../src/util/Constants'
+import DefaultSerializer from '../../dist/DefaultSerializer';
 
 describe('Parser', () => {
 
@@ -78,6 +79,19 @@ describe('Parser', () => {
             expect(newSource).toBe(source);
             done();
         })
+    });
+
+    it('can add imports from serializer', () => {
+        const imports = "test";
+        const source = "source";
+
+        const serializer = new DefaultSerializer();
+        serializer.createImports = jest.fn().mockReturnValue(imports);
+
+        const parser = new Parser({ serializer });
+        const newSource = parser.parse({ source });
+
+        expect(newSource).toBe(`${imports}\n${source}`);
     });
 
     it('can find markup', () => {

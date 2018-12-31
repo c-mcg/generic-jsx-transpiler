@@ -102,7 +102,7 @@ export default class Parser {
     }
 
     //TODO support file path
-    parse({ inputPath=null, source=null, async=false, outputPath }) {
+    parse({ inputPath, source, outputPath, async=false }) {
 
         this.source = (() => {
             if (source) {
@@ -116,7 +116,12 @@ export default class Parser {
             return this.loadFile(inputPath);
         })();
 
-        this.newSource = "";
+        const { createImports } = this.serializer;
+        this.newSource = createImports ? createImports() : "";
+
+        if (this.newSource) {
+            this.newSource += "\n";
+        }
 
         if (this.started) {
             throw new Error(`"start" method can only be called once on Parser.`);

@@ -11,4 +11,6 @@ export default class DefaultSerializer {
      */
     serialize(parsedComponent) { return parsedComponent.toJS(); }
 
+    createImports() { return ""; }
+
 }
