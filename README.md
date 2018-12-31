@@ -20,7 +20,7 @@ const Parser = require('generic-jsx-transpiler').Parser;
 
 const testJsx = `const ele = <div/>`
 
-// This will simple output '<div/>' in place of any JSX blocks
+// This will simply output '<div/>' in place of any JSX blocks
 function serialize(parsedComponent){
   return `<div/>`;
 };
@@ -38,3 +38,7 @@ const transpiledSource = parser.parse({
 
 console.log(transpiledSource);
 ```
+
+## API
+
+Coming soon
