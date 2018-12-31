@@ -87,7 +87,7 @@ export default class Parser {
         }
     }
 
-    start(async=false) {
+    parse(async=false) {
 
         if (this.started) {
             throw new Error(`"start" method can only be called once on Parser.`);

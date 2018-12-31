@@ -3,7 +3,7 @@ import Parser from '../src/Parser';
 describe('Integration', () => {
 
     function parse(source) {
-        return new Parser({source}).start();
+        return new Parser({source}).parse();
     }
 
     it('can serialize a component to an object', () => {

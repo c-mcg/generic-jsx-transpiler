@@ -7,7 +7,7 @@ describe('Parser', () => {
         const parser = new Parser({source: "<4 "});
 
         expect(() => {
-            parser.start();
+            parser.parse();
         }).toThrow();
 
     });
@@ -16,7 +16,7 @@ describe('Parser', () => {
         const parser = new Parser({source: "<div 4="});
 
         expect(() => {
-            parser.start();
+            parser.parse();
         }).toThrow();
 
     });
@@ -24,7 +24,7 @@ describe('Parser', () => {
     it('will not parse tags in quotes', () => {
         const parser = new Parser({source: `const h = "<"`});
 
-        parser.start();
+        parser.parse();
 
         expect(parser.state).toBe(STATE.NONE);
     });
@@ -32,7 +32,7 @@ describe('Parser', () => {
     it('will not parse escaped quotes within quotes', () => {
         const parser = new Parser({source: `const h = "\\""`});
 
-        parser.start();
+        parser.parse();
 
         expect(parser.state).toBe(STATE.NONE);
     });
@@ -40,7 +40,7 @@ describe('Parser', () => {
     it('will not parse tags in quotes within template literals', () => {
         const parser = new Parser({source: "` ${'<div "});
 
-        parser.start();
+        parser.parse();
 
         expect(parser.state).toBe(STATE.INSIDE_SOURCE_QUOTES);
     });

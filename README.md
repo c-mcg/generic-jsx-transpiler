@@ -28,5 +28,5 @@ function serialize(parsedComponent){
 const serializer = {serialize};
 const parser = new Parser({ source: testJsx, serializer });
 
-console.log(parser.start());
+console.log(parser.parse());
 ```

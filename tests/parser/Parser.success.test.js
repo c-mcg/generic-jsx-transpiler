@@ -22,7 +22,7 @@ describe('Parser', () => {
     it('can find markup', () => {
         const parser = new Parser({source: `<`})
 
-        parser.start();
+        parser.parse();
 
         expect(parser.state).toBe(STATE.LOOKING_FOR_TAG);
     });
@@ -31,7 +31,7 @@ describe('Parser', () => {
         const parser = new Parser({source: `div `})
         parser.setState(STATE.LOOKING_FOR_TAG, true);
 
-        parser.start();
+        parser.parse();
 
         expect(parser.state).toBe(STATE.LOOKING_FOR_PROPS);
         expect(parser.currTag).toBe("div");
@@ -42,7 +42,7 @@ describe('Parser', () => {
             const parser = new Parser({source});
             parser.setState(STATE.LOOKING_FOR_PROPS, true);
 
-            parser.start();
+            parser.parse();
 
             expect(parser.state).toBe(STATE.LOOKING_FOR_PROPS);
             expect(parser.currProps).toEqual(expectedProps);
@@ -101,7 +101,7 @@ describe('Parser', () => {
     it('can find a component', () => {
         const parser = new Parser({source: `<div>`})
 
-        parser.start();
+        parser.parse();
 
         expect(parser.currComponent).toEqual(new ParsedComponent({
             tag: "div",
@@ -114,7 +114,7 @@ describe('Parser', () => {
     it('can find a component with props', () => {
         const parser = new Parser({source: `<div x="0" y={5 + 5}>`})
 
-        parser.start();
+        parser.parse();
 
         expect(parser.currComponent).toEqual(new ParsedComponent({
             tag: "div",
@@ -130,7 +130,7 @@ describe('Parser', () => {
     it('can find a self closing component', () => {
         const parser = new Parser({source: `<div x="0" y={5 + 5}/>`})
 
-        parser.start();
+        parser.parse();
 
         expect(parser.currComponent).toEqual(new ParsedComponent({
             tag: "div",
@@ -146,7 +146,7 @@ describe('Parser', () => {
     it('can find a nested component', () => {
         const parser = new Parser({source: `<div><div/></div>`})
 
-        parser.start();
+        parser.parse();
 
         expect(parser.currComponent).toEqual(new ParsedComponent({
             tag: "div",
@@ -159,7 +159,7 @@ describe('Parser', () => {
     it('can find a nested string', () => {
         const parser = new Parser({source: `<div>hello</div>`})
 
-        parser.start();
+        parser.parse();
 
         expect(parser.currComponent).toEqual(new ParsedComponent({
             tag: "div",
@@ -170,7 +170,7 @@ describe('Parser', () => {
     it('will reduce whitespace in strings', () => {
         const parser = new Parser({source: `<div>h  e\t\tl\n\nl o</div>`})
 
-        parser.start();
+        parser.parse();
 
         expect(parser.currComponent).toEqual(new ParsedComponent({
             tag: "div",
@@ -181,7 +181,7 @@ describe('Parser', () => {
     it('can find sibling components', () => {
         const parser = new Parser({source: `<div><div/><div/></div>`})
 
-        parser.start();
+        parser.parse();
 
         expect(parser.currComponent).toEqual(new ParsedComponent({
             tag: "div",
@@ -194,11 +194,11 @@ describe('Parser', () => {
 
     it('will stop looking for markup when JSX has ended', () => {
         let parser = new Parser({source: `<div/>`})
-        parser.start();
+        parser.parse();
         expect(parser.state).toBe(STATE.NONE);
 
         parser = new Parser({source: `<div><div/></div>`})
-        parser.start();
+        parser.parse();
         expect(parser.state).toBe(STATE.NONE);
     })
 
@@ -211,7 +211,7 @@ describe('Parser', () => {
     it('can parse quotes preceded with an escaped backslack', () => {
         const parser = new Parser({source: `const h = "\\\\"`})
 
-        parser.start();
+        parser.parse();
 
         expect(parser.state).toBe(STATE.NONE);
     });
@@ -219,7 +219,7 @@ describe('Parser', () => {
     it('can parse template literals', () => {
         const parser = new Parser({source: "` hi ${"});
 
-        parser.start();
+        parser.parse();
 
         expect(parser.state).toBe(STATE.INSIDE_TEMPLATE_LITERAL);
     })
@@ -227,7 +227,7 @@ describe('Parser', () => {
     it('can parse tags in template literals', () => {
         const parser = new Parser({source: "` hi ${<div "});
 
-        parser.start();
+        parser.parse();
 
         expect(parser.state).toBe(STATE.LOOKING_FOR_PROPS);
         expect(parser.currTag).toBe("div");
@@ -236,7 +236,7 @@ describe('Parser', () => {
     it('can parse template literals with nested blocks', () => {
         const parser = new Parser({source: "` hi ${{{}} <div "});
 
-        parser.start();
+        parser.parse();
 
         expect(parser.state).toBe(STATE.LOOKING_FOR_PROPS);
         expect(parser.currTag).toBe("div");
@@ -245,7 +245,7 @@ describe('Parser', () => {
     it('can parse quotes inside template literals', () => {
         const parser = new Parser({source: "` ${'<div \" '}`"});
 
-        parser.start();
+        parser.parse();
 
         expect(parser.state).toBe(STATE.NONE);
     });
@@ -253,7 +253,7 @@ describe('Parser', () => {
     it('can parse two sets of template literals', () => {
         const parser = new Parser({source: "` ${`${ }"});
 
-        parser.start();
+        parser.parse();
 
         expect(parser.state).toBe(STATE.INSIDE_SOURCE_QUOTES);
         expect(parser.quoteType).toEqual(QUOTE_TYPE.BACKTICK);
@@ -262,7 +262,7 @@ describe('Parser', () => {
     it('can parse quotes in two sets of template literals', () => {
         const parser = new Parser({source: "`${ `${' \" '}` }`"});
 
-        parser.start();
+        parser.parse();
 
         expect(parser.state).toBe(STATE.NONE);
     });
