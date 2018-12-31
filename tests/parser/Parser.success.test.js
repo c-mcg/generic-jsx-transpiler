@@ -41,7 +41,7 @@ describe('Parser', () => {
         fs.unlinkSync(outputPath);
     });
 
-    it('it can accept a inputPath to parse', () => {
+    it('it can accept an inputPath to parse', () => {
         const inputPath = "test";
         const source = "source";
         const parser = new Parser();
@@ -51,6 +51,19 @@ describe('Parser', () => {
 
         expect(parser.loadFile).toHaveBeenCalledWith(inputPath);
         expect(parser.source).toBe(source);
+    });
+
+    it('it can accept an outputPath to write to', () => {
+        const outputPath = "test";
+        const source = "source";
+
+        const parser = new Parser();
+
+        parser.saveToFile = jest.fn().mockReturnValue(source);
+
+        const parserSource = parser.parse({ outputPath, source });
+
+        expect(parser.saveToFile).toHaveBeenCalledWith(outputPath);
     });
 
     it('can parse async', (done) => {
