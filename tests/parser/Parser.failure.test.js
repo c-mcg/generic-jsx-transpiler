@@ -21,6 +21,14 @@ describe('Parser', () => {
 
     });
 
+    it('it must have a source or filePath', () => {
+        const parser = new Parser();
+
+        expect(() => {
+            parser.parse({});
+        }).toThrow();
+    });
+
     it('will not parse tags in quotes', () => {
         const parser = new Parser();
 
@@ -44,6 +52,5 @@ describe('Parser', () => {
 
         expect(parser.state).toBe(STATE.INSIDE_SOURCE_QUOTES);
     });
-    
 
 });

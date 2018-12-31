@@ -24,7 +24,7 @@ describe('Parser', () => {
         const parserSource = parser.loadFile(thisFilePath);
 
         expect(parserSource).toEqual(thisFileSource);
-    })
+    });
 
     it('it can accept a filePath to parse', () => {
         const filePath = "test";
@@ -36,7 +36,7 @@ describe('Parser', () => {
 
         expect(parser.loadFile).toHaveBeenCalledWith(filePath);
         expect(parser.source).toBe(source);
-    })
+    });
 
     it('can find markup', () => {
         const parser = new Parser();
