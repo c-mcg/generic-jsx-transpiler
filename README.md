@@ -6,8 +6,6 @@ A library for transpiling JSX for use without React.
 
 `npm install generic-jsx-transpiler --save-dev`
 
-`npm install` if running tests or building dist
-
 ## Usage
 
 Here is a bare bones example of API usage.
