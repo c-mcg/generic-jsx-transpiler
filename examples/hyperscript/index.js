@@ -1,12 +1,9 @@
 // This is an example of using generic-jsx-parser to transform JSX to Hyperscript
+const Example = require('../Example');
 // Hyperscript is a library for generating HTML elements using JavaScript
 // More info here: https://www.npmjs.com/package/hyperscript
 
 const Parser = require('../../index.js').Parser;
-const fs = require('fs');
-
-const defaultInputPath = "./examples/hyperscript/input.jsx";
-const defaultOutputFile = "./examples/hyperscript/output.js";
 
 // Used to serialize a component from an object
 function serializeObject(compObj) {
@@ -37,64 +34,15 @@ function serialize(parsedComponent){
   return serializeObject(parsedComponent);
 };
 
+function createImports() {
+  return "const h = require('hyperscript')";
+}
+
 // Our serializer only needs a function called "serialize"
-const serializer = { serialize };
+// createImports is optional
+const serializer = { serialize, createImports };
 
-const readline = require('readline').createInterface({
-  input: process.stdin,
-  output: process.stdout,
-});
+// Create our parser
+const parser = new Parser({ serializer });
 
-readline.question(`Enter path to input file (${defaultInputPath}): `, (inputPath) => {
-
-  if (!inputPath) {
-    inputPath = defaultInputPath;
-  }
-
-  
-  readline.question(`Enter path to output file (${defaultOutputFile}): `, (outputPath) => {
-    console.log();
-    console.log(`Parsing source...`);
-
-    let sourceCode;
-    try {
-      sourceCode = fs.readFileSync(inputPath, { encoding: 'utf8' });
-    } catch (err) {
-      if (err.code === 'ENOENT') {
-        console.log('File not found!');
-        readline.close();
-        return;
-      } else {
-        throw err;
-      }
-    }
-
-
-    if (!outputPath) {
-      outputPath = defaultOutputFile;
-    }
-
-    // Create our parser
-    const parser = new Parser({ source: sourceCode, serializer });
-
-    const hyperscriptRequire = "const h = require('hyperscript')\n"
-
-    // Run the parser
-    const newSource = parser.start();
-
-    try {
-      fs.writeFileSync(outputPath, hyperscriptRequire + newSource);
-    } catch (e) {
-      console.log("Error writing to file");
-      readline.close();
-      return;
-    }
-
-    console.log(`Transpiled JSX written to file ${outputPath}`);
-    console.log();
-    console.log("Try pasting the output into this sandbox!", "https://codesandbox.io/s/v30y8ljl05");
-
-    readline.close();
-  });
-});
-
+new Example('hyperscript').run(parser);
