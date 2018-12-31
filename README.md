@@ -25,8 +25,16 @@ function serialize(parsedComponent){
   return `<div/>`;
 };
 
-const serializer = {serialize};
+// Our "serializer" just needs to have a 'serialize' function
+const serializer = { serialize };
+
 const parser = new Parser({ serializer });
 
-console.log(parser.parse());
+const transpiledSource = parser.parse({
+  source: "",
+  // filePath: "", // source param will override this
+  // async: false, // Will return promise if true
+});
+
+console.log(transpiledSource);
 ```

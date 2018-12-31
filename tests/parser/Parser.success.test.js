@@ -38,6 +38,20 @@ describe('Parser', () => {
         expect(parser.source).toBe(source);
     });
 
+    it('can parse async', (done) => {
+        const source = "test";
+        const parser = new Parser();
+
+        const promise = parser.parse({ source, async: true });
+
+        expect(promise).toBeInstanceOf(Promise);
+
+        promise.then((newSource) => {
+            expect(newSource).toBe(source);
+            done();
+        })
+    });
+
     it('can find markup', () => {
         const parser = new Parser();
 
