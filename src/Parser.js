@@ -97,8 +97,12 @@ export default class Parser {
         return fs.readFileSync(path, { encoding: 'utf8' });
     }
 
+    saveToFile(path) {
+      return fs.writeFileSync(path, this.newSource);
+    }
+
     //TODO support file path
-    parse({ inputPath=null, source=null, async=false }) {
+    parse({ inputPath=null, source=null, async=false, outputPath }) {
 
         this.source = (() => {
             if (source) {
@@ -132,14 +136,17 @@ export default class Parser {
                 return;
             }
 
+            if (outputPath) {
+                this.saveToFile(outputPath);
+            }
+
             return this.newSource;
         }
 
         if (async) {
             this.promise = new Promise(start);
         } else {
-            start();
-            return this.newSource;
+            return start();
         }
 
         return this.promise;

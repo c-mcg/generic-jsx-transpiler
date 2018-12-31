@@ -26,6 +26,21 @@ describe('Parser', () => {
         expect(parserSource).toEqual(thisFileSource);
     });
 
+    it('it can write the new source to a file', () => {
+        const newSource = "test";
+        const outputPath = "./.test_output";
+
+        const parser = new Parser();
+        parser.newSource = newSource;
+        const parserSource = parser.saveToFile(outputPath);
+
+        const outputFileContents = fs.readFileSync(outputPath, { encoding: 'utf8' });
+
+        expect(outputFileContents).toEqual(newSource);
+
+        fs.unlinkSync(outputPath);
+    });
+
     it('it can accept a inputPath to parse', () => {
         const inputPath = "test";
         const source = "source";
