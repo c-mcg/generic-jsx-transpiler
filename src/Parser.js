@@ -98,18 +98,18 @@ export default class Parser {
     }
 
     //TODO support file path
-    parse({ filePath=null, source=null, async=false }) {
+    parse({ inputPath=null, source=null, async=false }) {
 
         this.source = (() => {
             if (source) {
                 return source;
             }
 
-            if (!filePath) {
-                throw new Error("You must specify source to parse via 'filePath' or 'source' params");
+            if (!inputPath) {
+                throw new Error("You must specify source to parse via 'inputPath' or 'source' params");
             }
             
-            return this.loadFile(filePath);
+            return this.loadFile(inputPath);
         })();
 
         this.newSource = "";

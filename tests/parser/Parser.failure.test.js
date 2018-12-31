@@ -21,7 +21,7 @@ describe('Parser', () => {
 
     });
 
-    it('it must have a source or filePath', () => {
+    it('it must have a source or inputPath', () => {
         const parser = new Parser();
 
         expect(() => {

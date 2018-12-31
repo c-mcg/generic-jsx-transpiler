@@ -26,15 +26,15 @@ describe('Parser', () => {
         expect(parserSource).toEqual(thisFileSource);
     });
 
-    it('it can accept a filePath to parse', () => {
-        const filePath = "test";
+    it('it can accept a inputPath to parse', () => {
+        const inputPath = "test";
         const source = "source";
         const parser = new Parser();
         parser.loadFile = jest.fn().mockReturnValue(source);
 
-        const parserSource = parser.parse({ filePath });
+        const parserSource = parser.parse({ inputPath });
 
-        expect(parser.loadFile).toHaveBeenCalledWith(filePath);
+        expect(parser.loadFile).toHaveBeenCalledWith(inputPath);
         expect(parser.source).toBe(source);
     });
 

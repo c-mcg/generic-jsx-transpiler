@@ -32,7 +32,7 @@ const parser = new Parser({ serializer });
 
 const transpiledSource = parser.parse({
   source: "",
-  // filePath: "", // source param will override this
+  // inputPath: "", // source param will override this
   // async: false, // Will return promise if true
 });
 
