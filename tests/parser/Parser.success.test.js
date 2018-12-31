@@ -6,32 +6,27 @@ import { QUOTE_TYPE } from '../../src/util/Constants'
 describe('Parser', () => {
 
     it('can be created', () => {
-        const testComponent = `
-            function() {
-                return <div></div>
-            }
-        `.split('\n').map(line => line.trim()).join(' ').trim();
 
-        const parser = new Parser({source: testComponent});
+        const parser = new Parser();
 
-        expect(parser.source).toBe(testComponent);
-        expect(parser.state).toBe(STATE.NONE);
+        expect(parser.source).toBe(null);
         expect(parser.newSource).toEqual("");
+        expect(parser.state).toBe(STATE.NONE);
     });
 
     it('can find markup', () => {
-        const parser = new Parser({source: `<`})
+        const parser = new Parser();
 
-        parser.parse();
+        parser.parse({ source: `<` });
 
         expect(parser.state).toBe(STATE.LOOKING_FOR_TAG);
     });
 
     it('can find a tag', () => {
-        const parser = new Parser({source: `div `})
+        const parser = new Parser();
         parser.setState(STATE.LOOKING_FOR_TAG, true);
 
-        parser.parse();
+        parser.parse({ source: `div ` });
 
         expect(parser.state).toBe(STATE.LOOKING_FOR_PROPS);
         expect(parser.currTag).toBe("div");
@@ -39,10 +34,10 @@ describe('Parser', () => {
 
     function createPropTest(source, expectedProps, returnParser=false) {
         return () => {
-            const parser = new Parser({source});
+            const parser = new Parser();
             parser.setState(STATE.LOOKING_FOR_PROPS, true);
 
-            parser.parse();
+            parser.parse({ source });
 
             expect(parser.state).toBe(STATE.LOOKING_FOR_PROPS);
             expect(parser.currProps).toEqual(expectedProps);
@@ -99,9 +94,9 @@ describe('Parser', () => {
     });
 
     it('can find a component', () => {
-        const parser = new Parser({source: `<div>`})
+        const parser = new Parser();
 
-        parser.parse();
+        parser.parse({ source: `<div>` });
 
         expect(parser.currComponent).toEqual(new ParsedComponent({
             tag: "div",
@@ -112,9 +107,9 @@ describe('Parser', () => {
     });
 
     it('can find a component with props', () => {
-        const parser = new Parser({source: `<div x="0" y={5 + 5}>`})
+        const parser = new Parser();
 
-        parser.parse();
+        parser.parse({ source: `<div x="0" y={5 + 5}>` });
 
         expect(parser.currComponent).toEqual(new ParsedComponent({
             tag: "div",
@@ -128,9 +123,9 @@ describe('Parser', () => {
     });
 
     it('can find a self closing component', () => {
-        const parser = new Parser({source: `<div x="0" y={5 + 5}/>`})
+        const parser = new Parser();
 
-        parser.parse();
+        parser.parse({ source: `<div x="0" y={5 + 5}/>` });
 
         expect(parser.currComponent).toEqual(new ParsedComponent({
             tag: "div",
@@ -144,9 +139,9 @@ describe('Parser', () => {
     })
 
     it('can find a nested component', () => {
-        const parser = new Parser({source: `<div><div/></div>`})
+        const parser = new Parser();
 
-        parser.parse();
+        parser.parse({ source: `<div><div/></div>` });
 
         expect(parser.currComponent).toEqual(new ParsedComponent({
             tag: "div",
@@ -157,9 +152,9 @@ describe('Parser', () => {
     });
 
     it('can find a nested string', () => {
-        const parser = new Parser({source: `<div>hello</div>`})
+        const parser = new Parser();
 
-        parser.parse();
+        parser.parse({ source: `<div>hello</div>` });
 
         expect(parser.currComponent).toEqual(new ParsedComponent({
             tag: "div",
@@ -168,9 +163,9 @@ describe('Parser', () => {
     })
 
     it('will reduce whitespace in strings', () => {
-        const parser = new Parser({source: `<div>h  e\t\tl\n\nl o</div>`})
+        const parser = new Parser();
 
-        parser.parse();
+        parser.parse({ source: `<div>h  e\t\tl\n\nl o</div>` });
 
         expect(parser.currComponent).toEqual(new ParsedComponent({
             tag: "div",
@@ -179,9 +174,9 @@ describe('Parser', () => {
     })
 
     it('can find sibling components', () => {
-        const parser = new Parser({source: `<div><div/><div/></div>`})
+        const parser = new Parser();
 
-        parser.parse();
+        parser.parse({ source: `<div><div/><div/></div>` });
 
         expect(parser.currComponent).toEqual(new ParsedComponent({
             tag: "div",
@@ -193,12 +188,12 @@ describe('Parser', () => {
     })
 
     it('will stop looking for markup when JSX has ended', () => {
-        let parser = new Parser({source: `<div/>`})
-        parser.parse();
+        let parser = new Parser();
+        parser.parse({ source: `<div/>` });
         expect(parser.state).toBe(STATE.NONE);
 
-        parser = new Parser({source: `<div><div/></div>`})
-        parser.parse();
+        parser = new Parser();
+        parser.parse({ source: `<div><div/></div>` });
         expect(parser.state).toBe(STATE.NONE);
     })
 
@@ -209,60 +204,60 @@ describe('Parser', () => {
     /***************************************************/
 
     it('can parse quotes preceded with an escaped backslack', () => {
-        const parser = new Parser({source: `const h = "\\\\"`})
+        const parser = new Parser();
 
-        parser.parse();
+        parser.parse({ source: `const h = "\\\\"` });
 
         expect(parser.state).toBe(STATE.NONE);
     });
 
     it('can parse template literals', () => {
-        const parser = new Parser({source: "` hi ${"});
+        const parser = new Parser();
 
-        parser.parse();
+        parser.parse({ source: "` hi ${" });
 
         expect(parser.state).toBe(STATE.INSIDE_TEMPLATE_LITERAL);
     })
 
     it('can parse tags in template literals', () => {
-        const parser = new Parser({source: "` hi ${<div "});
+        const parser = new Parser();
 
-        parser.parse();
+        parser.parse({ source: "` hi ${<div " });
 
         expect(parser.state).toBe(STATE.LOOKING_FOR_PROPS);
         expect(parser.currTag).toBe("div");
     })
 
     it('can parse template literals with nested blocks', () => {
-        const parser = new Parser({source: "` hi ${{{}} <div "});
+        const parser = new Parser();
 
-        parser.parse();
+        parser.parse({ source: "` hi ${{{}} <div " });
 
         expect(parser.state).toBe(STATE.LOOKING_FOR_PROPS);
         expect(parser.currTag).toBe("div");
     })
 
     it('can parse quotes inside template literals', () => {
-        const parser = new Parser({source: "` ${'<div \" '}`"});
+        const parser = new Parser();
 
-        parser.parse();
+        parser.parse({ source: "` ${'<div \" '}`" });
 
         expect(parser.state).toBe(STATE.NONE);
     });
 
     it('can parse two sets of template literals', () => {
-        const parser = new Parser({source: "` ${`${ }"});
+        const parser = new Parser();
 
-        parser.parse();
+        parser.parse({ source: "` ${`${ }" });
 
         expect(parser.state).toBe(STATE.INSIDE_SOURCE_QUOTES);
         expect(parser.quoteType).toEqual(QUOTE_TYPE.BACKTICK);
     });
 
     it('can parse quotes in two sets of template literals', () => {
-        const parser = new Parser({source: "`${ `${' \" '}` }`"});
+        const parser = new Parser();
 
-        parser.parse();
+        parser.parse({ source: "`${ `${' \" '}` }`" });
 
         expect(parser.state).toBe(STATE.NONE);
     });

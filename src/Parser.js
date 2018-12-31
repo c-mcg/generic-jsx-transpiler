@@ -1,3 +1,5 @@
+import fs from 'fs'
+
 import { isNumber, isAlpha, isWhitespace, throwError } from './util/Util'
 import { QUOTE_TYPE, QUOTE_CHAR, QUOTE_TYPE_FROM_CHAR } from './util/Constants'
 
@@ -8,9 +10,13 @@ import ParsedComponent from './ParsedComponent'
 
 export default class Parser {
 
-    constructor({ source, serializer=new DefaultSerializer() }) {
-        this.source = source;
+    constructor({ serializer=new DefaultSerializer() }={}) {
+
+        // this.source = source;//fs.readFileSync(fileP, { encoding: 'utf8' });
+
         this.serializer = serializer;
+
+        this.source = null;
         this.newSource = "";
 
         this.started = false;
@@ -87,7 +93,10 @@ export default class Parser {
         }
     }
 
-    parse(async=false) {
+    //TODO support file path
+    parse({ filePath, source=null, async=false }) {
+        this.source = source;
+        this.newSource = "";
 
         if (this.started) {
             throw new Error(`"start" method can only be called once on Parser.`);
@@ -138,7 +147,8 @@ class State {
         name="",
         init=()=>{},
         handleState=()=>{},
-        parent=null}) {
+        parent=null
+    }) {
 
         this.name = name;
         this.init = init.bind(this);
