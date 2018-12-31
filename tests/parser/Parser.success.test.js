@@ -1,3 +1,5 @@
+import fs from 'fs'
+
 import Parser, { STATE } from '../../src/Parser'
 import ParsedComponent from '../../src/ParsedComponent'
 import { Prop, EvaluatedProp } from '../../src/ParsedProp'
@@ -13,6 +15,28 @@ describe('Parser', () => {
         expect(parser.newSource).toEqual("");
         expect(parser.state).toBe(STATE.NONE);
     });
+
+    it('it can load the source from a file', () => {
+        const thisFilePath = __filename;
+        const thisFileSource = fs.readFileSync(thisFilePath, { encoding: 'utf8' });
+
+        const parser = new Parser();
+        const parserSource = parser.loadFile(thisFilePath);
+
+        expect(parserSource).toEqual(thisFileSource);
+    })
+
+    it('it can accept a filePath to parse', () => {
+        const filePath = "test";
+        const source = "source";
+        const parser = new Parser();
+        parser.loadFile = jest.fn().mockReturnValue(source);
+
+        const parserSource = parser.parse({ filePath });
+
+        expect(parser.loadFile).toHaveBeenCalledWith(filePath);
+        expect(parser.source).toBe(source);
+    })
 
     it('can find markup', () => {
         const parser = new Parser();

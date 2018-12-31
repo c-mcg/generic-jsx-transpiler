@@ -12,7 +12,7 @@ export default class Parser {
 
     constructor({ serializer=new DefaultSerializer() }={}) {
 
-        // this.source = source;//fs.readFileSync(fileP, { encoding: 'utf8' });
+        // this.source = source;//
 
         this.serializer = serializer;
 
@@ -93,9 +93,25 @@ export default class Parser {
         }
     }
 
+    loadFile(path) {
+        return fs.readFileSync(path, { encoding: 'utf8' });
+    }
+
     //TODO support file path
-    parse({ filePath, source=null, async=false }) {
-        this.source = source;
+    parse({ filePath=null, source=null, async=false }) {
+
+        this.source = (() => {
+            if (source) {
+                return source;
+            }
+
+            if (!filePath) {
+                throw new Error("You must specify source to parse via 'filePath' or 'source' params");
+            }
+            
+            return this.loadFile(filePath);
+        })();
+
         this.newSource = "";
 
         if (this.started) {
