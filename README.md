@@ -1,4 +1,4 @@
-# generic-jsx-transpiler [![npm version](https://badge.fury.io/js/generic-jsx-transpiler.svg)](https://badge.fury.io/js/generic-jsx-transpiler) [![Build Status](https://travis-ci.org/c-mcg/generic-jsx-transpiler.svg?branch=master)](https://travis-ci.org/c-mcg/generic-jsx-transpiler)
+# generic-jsx-transpiler [![npm version](https://badge.fury.io/js/generic-jsx-transpiler.svg)](https://badge.fury.io/js/generic-jsx-transpiler) [![Build Status](https://travis-ci.org/niknakbakpak/generic-jsx-transpiler.svg?branch=master)](https://travis-ci.org/niknakbakpak/generic-jsx-transpiler)
 
 A library for transpiling JSX for use without React.
 
