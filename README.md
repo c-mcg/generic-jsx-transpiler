@@ -1,12 +1,10 @@
 # generic-jsx-transpiler [![npm version](https://badge.fury.io/js/generic-jsx-transpiler.svg)](https://badge.fury.io/js/generic-jsx-transpiler) [![Build Status](https://travis-ci.org/niknakbakpak/generic-jsx-transpiler.svg?branch=master)](https://travis-ci.org/niknakbakpak/generic-jsx-transpiler)
 
-A library for transpiling JSX for use without React.
+A library for transpiling JSX for use without React. Has no dependencies.
 
 # Setup
 
 `npm install generic-jsx-transpiler --save-dev`
-
-`npm install` if running tests or building dist
 
 ## Usage
 
