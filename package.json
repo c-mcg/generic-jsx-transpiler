@@ -26,7 +26,7 @@
       ".*": "./node_modules/babel-jest"
     }
   },
-  "author": "Connor McGrogan",
+  "author": "Nik M",
   "license": "ISC",
   "devDependencies": {
     "@babel/cli": "^7.2.0",
