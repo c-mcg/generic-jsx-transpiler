@@ -2,7 +2,7 @@
 
 A library for transpiling JSX for use without React. Has no dependencies.
 
-# Setup
+## Setup
 
 `npm install generic-jsx-transpiler --save-dev`
 
