@@ -1,4 +1,5 @@
 import Parser from '../src/Parser';
+import DefaultSerializer from '../src/DefaultSerializer';
 
 describe('Integration', () => {
 
@@ -65,6 +66,38 @@ describe('Integration', () => {
         const serializedComponent = parse(source);
         expect(serializedComponent).toEqual(expectedResult)
     
-    })
+    });
+
+    it.only('can serialize a JSX source file', () => {
+        const source = `
+            const x = <div><span>span child</span>div child</div>
+            const y = <div><span>span child</span>div child</div>
+        `;
+        const serializer = new DefaultSerializer();
+        serializer.createImports = () => "const h = require('test- package')";
+
+        //TODO add props
+        const expectedConvertedJsx = {
+            tag: "div",
+            props: null,
+            children: [
+                {
+                    tag: "span",
+                    props: null,
+                    children: ["span child"],
+                },
+                "div child"
+            ],
+        };
+        const expectedResult = 
+            serializer.createImports() + '\n' +
+            source.split('<div><span>span child</span>div child</div>')
+                .join(JSON.stringify(expectedConvertedJsx));
+
+        const parser = new Parser({ serializer });
+        const output = parser.parse({ source });
+        expect(output).toEqual(expectedResult)
+    
+    });
 
 })
