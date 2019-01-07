@@ -2,6 +2,8 @@
 
 A library for transpiling JSX for use without React. Has no dependencies.
 
+Checkout the [webpack loader](https://www.npmjs.com/package/generic-jsx-loader)
+
 ## Setup
 
 `npm install generic-jsx-transpiler --save-dev`
