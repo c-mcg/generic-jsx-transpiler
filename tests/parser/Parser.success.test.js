@@ -267,13 +267,34 @@ describe('Parser', () => {
         }))
     })
 
-    it('will stop looking for markup when JSX has ended', () => {
-        let parser = new Parser();
-        parser.parse({ source: `<div/>` });
-        expect(parser.state).toBe(STATE.NONE);
+    it.only('will stop looking for markup when JSX has ended', () => {
+        // const jsx = "<div><span>span child</span>div child</div>";
+        const jsx = "<div/>";
+        const source = `
+            const test = ${jsx}
+            const test2 = ${jsx}
+        `;
+        //TODO add props
+        const expectedConvertedJsx = {
+            tag: "div",
+            props: null,
+            children: [
+                {
+                    tag: "span",
+                    props: null,
+                    children: ["span child"],
+                },
+                "div child"
+            ],
+        };
 
-        parser = new Parser();
-        parser.parse({ source: `<div><div/></div>` });
+        const parser = new Parser();
+
+        const result = parser.parse({ source });
+        
+        console.log(parser).state
+        expect(result).toBe(source.split(jsx)
+            .join(JSON.stringify(expectedConvertedJsx)));
         expect(parser.state).toBe(STATE.NONE);
     })
 
