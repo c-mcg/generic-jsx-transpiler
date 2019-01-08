@@ -49,13 +49,39 @@ function () {
     this.newSource = "";
     this.started = false;
     this.promise = null;
-    this.quoteType = _Constants.QUOTE_TYPE.NONE;
     this.currentIndex = 0;
     this._ignoreErrors = false;
+    this.resetStateProperties();
     this.setState(STATE.NONE);
   }
 
   _createClass(Parser, [{
+    key: "resetStateProperties",
+    value: function resetStateProperties() {
+      if (this.currComponent) {
+        this.lastComponent = this.currComponent;
+      }
+
+      this.currComponent = null;
+      this.assignQuotesTo = 'newSource';
+      this.quoteReturnStateQueue = [];
+      this.QUOTE_TYPE = _Constants.QUOTE_TYPE.NONE;
+      this.nextCharEscaped = false;
+      this.foundDollarSignInQuotes = false;
+      this.numOpenBlocks = 0;
+      this.currTag = "";
+      this.currProps = {};
+      this.foundClosingTagSlash = false;
+      this.currTagEndsWithSlash = false;
+      this.currTagLeadsWithSlash = false;
+      this.currPropName = "";
+      this.foundClosingTagSlash = false;
+      this.currString = ""; // TODO rename this
+
+      this.lastCharWasWhitespace = false;
+      this.currPropValue = "";
+    }
+  }, {
     key: "addCharToQuoteVar",
     value: function addCharToQuoteVar(c) {
       this[this.assignQuotesTo] += c;
@@ -270,8 +296,7 @@ STATE = {
   NONE: new State({
     name: "NONE",
     init: function init(parser) {
-      parser.assignQuotesTo = "newSource";
-      parser.quoteReturnStateQueue = [];
+      parser.resetStateProperties();
     },
     handleState: function handleState(c, parser) {
       if (c === '<') {
@@ -386,6 +411,7 @@ STATE = {
       parser.currTag = "";
       parser.currProps = {};
       parser.foundClosingTagSlash = false;
+      parser.currTagEndsWithSlash = false;
       parser.currTagLeadsWithSlash = false;
     },
     handleState: function handleState(c, parser) {
@@ -404,6 +430,7 @@ STATE = {
         return;
       } else if (parser.currTagEndsWithSlash) {
         parser.throwError("Unexpected ".concat(c));
+        return;
       }
 
       if ((0, _Util.isWhitespace)(c)) {
