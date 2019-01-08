@@ -22,12 +22,44 @@ export default class Parser {
         this.started = false;
         this.promise = null;
 
-        this.quoteType = QUOTE_TYPE.NONE;
         this.currentIndex = 0;
 
         this._ignoreErrors = false;
 
+        this.resetStateProperties();
+
         this.setState(STATE.NONE);
+    }
+
+    resetStateProperties() {
+        if (this.currComponent) {
+            this.lastComponent = this.currComponent;
+        }
+        this.currComponent = null;
+
+        this.assignQuotesTo = 'newSource';
+        this.quoteReturnStateQueue = [];
+        this.QUOTE_TYPE = QUOTE_TYPE.NONE;
+
+        this.nextCharEscaped = false;
+        this.foundDollarSignInQuotes = false;
+
+        this.numOpenBlocks = 0;
+
+        this.currTag = "";
+        this.currProps = {};
+        this.foundClosingTagSlash = false;
+        this.currTagEndsWithSlash = false;
+        this.currTagLeadsWithSlash = false;
+
+        this.currPropName = "";
+        this.foundClosingTagSlash = false;
+        this.currString = ""; // TODO rename this
+
+        this.lastCharWasWhitespace = false;
+
+        this.currPropValue = "";
+
     }
 
     addCharToQuoteVar(c) {
@@ -210,8 +242,7 @@ STATE = {
     NONE: new State({
         name: "NONE",
         init(parser) {
-            parser.assignQuotesTo = "newSource";
-            parser.quoteReturnStateQueue = [];
+            parser.resetStateProperties();
         },
         handleState(c, parser) {
             if (c === '<') {
@@ -326,6 +357,7 @@ STATE = {
             parser.currTag = "";
             parser.currProps = {};
             parser.foundClosingTagSlash = false;
+            parser.currTagEndsWithSlash = false;
             parser.currTagLeadsWithSlash = false;
         },
         handleState(c, parser) {
@@ -343,7 +375,8 @@ STATE = {
                 parser.onFoundTag();
                 return;
             } else if (parser.currTagEndsWithSlash) {
-                parser.throwError(`Unexpected ${c}`)
+                parser.throwError(`Unexpected ${c}`);
+                return;
             }
             
             if (isWhitespace(c)) {
