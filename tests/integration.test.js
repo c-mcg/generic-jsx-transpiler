@@ -68,7 +68,7 @@ describe('Integration', () => {
     
     });
 
-    it.only('can serialize a JSX source file', () => {
+    it('can serialize a JSX source file', () => {
         const source = `
             const x = <div><span>span child</span>div child</div>
             const y = <div><span>span child</span>div child</div>
