@@ -207,7 +207,7 @@ describe('Parser', () => {
 
         parser.parse({ source: `<div x="0" y={5 + 5}/>` });
 
-        expect(parser.currComponent).toEqual(new ParsedComponent({
+        expect(parser.lastComponent).toEqual(new ParsedComponent({
             tag: "div",
             props: {
                 x: new Prop("0"),
@@ -223,7 +223,7 @@ describe('Parser', () => {
 
         parser.parse({ source: `<div><div/></div>` });
 
-        expect(parser.currComponent).toEqual(new ParsedComponent({
+        expect(parser.lastComponent).toEqual(new ParsedComponent({
             tag: "div",
             children: [
                 new ParsedComponent({tag: "div"})
@@ -236,7 +236,7 @@ describe('Parser', () => {
 
         parser.parse({ source: `<div>hello</div>` });
 
-        expect(parser.currComponent).toEqual(new ParsedComponent({
+        expect(parser.lastComponent).toEqual(new ParsedComponent({
             tag: "div",
             children: ["hello"]
         }))
@@ -247,7 +247,7 @@ describe('Parser', () => {
 
         parser.parse({ source: `<div>h  e\t\tl\n\nl o</div>` });
 
-        expect(parser.currComponent).toEqual(new ParsedComponent({
+        expect(parser.lastComponent).toEqual(new ParsedComponent({
             tag: "div",
             children: ["h e l l o"]
         }))
@@ -258,7 +258,7 @@ describe('Parser', () => {
 
         parser.parse({ source: `<div><div/><div/></div>` });
 
-        expect(parser.currComponent).toEqual(new ParsedComponent({
+        expect(parser.lastComponent).toEqual(new ParsedComponent({
             tag: "div",
             children: [
                 new ParsedComponent({tag: "div"}),
@@ -267,9 +267,8 @@ describe('Parser', () => {
         }))
     })
 
-    it.only('will stop looking for markup when JSX has ended', () => {
-        // const jsx = "<div><span>span child</span>div child</div>";
-        const jsx = "<div/>";
+    it('can parse a file with multiple blocks', () => {
+        const jsx = "<div><span>span child</span>div child</div>";
         const source = `
             const test = ${jsx}
             const test2 = ${jsx}
@@ -292,7 +291,6 @@ describe('Parser', () => {
 
         const result = parser.parse({ source });
         
-        console.log(parser).state
         expect(result).toBe(source.split(jsx)
             .join(JSON.stringify(expectedConvertedJsx)));
         expect(parser.state).toBe(STATE.NONE);
